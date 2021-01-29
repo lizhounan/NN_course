@@ -106,7 +106,7 @@ def split_fixed(dataset_x, dataset_y):
 def train_process(img_path, batch, epochs, plot, train, add_noise, verbose):
     model = get_model_approach_2()
     dataset_x, dataset_y, onehot2label, index2label, Fh, Fha = get_dataset(img_path, add_noise)
-    train_x, train_y, test_x, test_y = split(dataset_x, dataset_y, train, onehot2label)
+    train_x, train_y, test_x, test_y = split_fixed(dataset_x, dataset_y)
     if train < 20:
         history = model.fit(train_x, train_y, batch_size=batch, epochs=epochs, verbose=verbose, validation_data=(test_x, test_y))
     else:
@@ -117,63 +117,73 @@ def train_process(img_path, batch, epochs, plot, train, add_noise, verbose):
         x = np.arange(epochs)
         plt.plot(x, acc, label='acc')
         plt.plot(x, loss, label='loss')
+        plt.legend()
         plt.show()
 
-    # show test result:
-    # if train == 20:
-    #     print('trained on the whole dateset. now test the model on the whole dataset')
-    #     pred = model.predict(train_x)
-    #     cnt = 0
-    #     for i in range(20):
-    #         y_pred = index2label[np.argmax(pred[i])]
-    #         y_true = onehot2label[tuple(list(train_y[i]))]
-    #         print('pred: ', y_pred, '  truth: ',  y_true, 'Fh: ', Fh[y_true+y_pred], 'Fha: ', Fha[y_true+y_pred])
-    #         if y_pred == y_true:
-    #             cnt += 1
-
-    #     print('acc: ', cnt / 20)
-    # else:
-    #     print('trained on the training set. now test the model on the test set')
-    #     pred = model.predict(test_x)
-    #     cnt = 0
-    #     for i in range(len(test_x)):
-    #         y_pred = index2label[np.argmax(pred[i])]
-    #         y_true = onehot2label[tuple(list(test_y[i]))]
-    #         print('pred: ', y_pred, '  truth: ',  y_true, 'Fh: ', Fh[y_true+y_pred], 'Fha: ', Fha[y_true+y_pred])
-    #         if y_pred == y_true:
-    #             cnt += 1
-
-    #     print('acc: ', cnt / len(test_x))
-
-    # test on the total datset.....no matter how the model is trained
-    print('test the model on the whole dataset')
-    pred = model.predict(dataset_x)
+    
     fhs = []
     fhas = []
+    
+    print('now test the model on the train set')
+    pred = model.predict(train_x)
     cnt = 0
-    for i in range(20):
+    for i in range(10):
         y_pred = index2label[np.argmax(pred[i])]
-        y_true = onehot2label[tuple(list(dataset_y[i]))]
-        print('pred: ', y_pred, '  truth: ',  y_true, 'Fh: ', format(Fh[y_true+y_pred], '.2f'), 'Fha: ', format(Fha[y_true+y_pred], '.2f'))
+        y_true = onehot2label[tuple(list(train_y[i]))]
+        print('truth: ',  y_true, '  pred: ', y_pred, 'Fh: ', format(Fh[y_true+y_pred], '.2f'), 'Fha: ', format(Fha[y_true+y_pred], '.2f'))
         fhs.append(Fh[y_true+y_pred])
         fhas.append(format(Fha[y_true+y_pred]))
         if y_pred == y_true:
             cnt += 1
 
-    print('acc: ', cnt / 20)
+    print('acc: ', cnt / 10)
 
-    training_samples = []
-    for i in range(len(train_y)):
-        training_samples.append(onehot2label[tuple(list(train_y[i]))])
+    print('now test the model on the test set')
+    pred = model.predict(test_x)
+    cnt = 0
+    for i in range(10):
+        y_pred = index2label[np.argmax(pred[i])]
+        y_true = onehot2label[tuple(list(test_y[i]))]
+        print('truth: ',  y_true, '  pred: ', y_pred, 'Fh: ', format(Fh[y_true+y_pred], '.2f'), 'Fha: ', format(Fha[y_true+y_pred], '.2f'))
+        fhs.append(Fh[y_true+y_pred])
+        fhas.append(format(Fha[y_true+y_pred]))
+        if y_pred == y_true:
+            cnt += 1
+
+    print('acc: ', cnt / 10)
+
+    # # test on the total datset.....no matter how the model is trained
+    # print('test the model on the whole dataset')
+    # pred = model.predict(dataset_x)
+    # fhs = []
+    # fhas = []
+    # cnt = 0
+    # for i in range(20):
+    #     y_pred = index2label[np.argmax(pred[i])]
+    #     y_true = onehot2label[tuple(list(dataset_y[i]))]
+    #     print('pred: ', y_pred, '  truth: ',  y_true, 'Fh: ', format(Fh[y_true+y_pred], '.2f'), 'Fha: ', format(Fha[y_true+y_pred], '.2f'))
+    #     fhs.append(Fh[y_true+y_pred])
+    #     fhas.append(format(Fha[y_true+y_pred]))
+    #     if y_pred == y_true:
+    #         cnt += 1
+
+    # print('acc: ', cnt / 20)
+
+    ordered_samples = []
+    for i in range(10):
+        ordered_samples.append(onehot2label[tuple(list(train_y[i]))])
+
+    for i in range(10):
+        ordered_samples.append(onehot2label[tuple(list(test_y[i]))])
     
 
-    return training_samples, fhs, fhas
+    return ordered_samples, fhs, fhas
 
 
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--data_path', type=str, default='Gray')
-    parser.add_argument('-e', '--epochs', type=int, default=10)
+    parser.add_argument('-e', '--epochs', type=int, default=100)
     parser.add_argument('-b', '--batch_size', type=int, default=5)
     parser.add_argument('-p', '--plot', type=bool, default=True)
     parser.add_argument('-t', '--train', type=int, default=10)
