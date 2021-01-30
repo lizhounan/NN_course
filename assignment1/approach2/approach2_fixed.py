@@ -58,8 +58,11 @@ def get_dataset(dir, add_noise):
             idx = np.random.permutation(idx)
             for j in range(25):
                 dataset_x[i][idx[j]] += noise[j]
-
-    return np.array(dataset_x), np.array(dataset_y), onehot2label, index2label, Fh, Fha
+    dataset_x = np.array(dataset_x)
+    min_ = np.min(dataset_x, keepdims=True)
+    max_ = np.max(dataset_x, keepdims=True)
+    dataset_x = (dataset_x - min_) / max_
+    return dataset_x, np.array(dataset_y), onehot2label, index2label, Fh, Fha
 
 
 def split(dataset_x, dataset_y, train, onehot2label):
@@ -114,9 +117,13 @@ def train_process(img_path, batch, epochs, plot, train, add_noise, verbose):
     if plot:
         acc = history.history['accuracy']
         loss = history.history['loss']
+        val_acc = history.history['val_accuracy']
+        val_loss = history.history['val_loss']
         x = np.arange(epochs)
         plt.plot(x, acc, label='acc')
         plt.plot(x, loss, label='loss')
+        plt.plot(x, val_acc, label='val_acc')
+        plt.plot(x, val_loss, label='val_loss')
         plt.legend()
         plt.show()
 
