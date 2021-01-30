@@ -1,0 +1,21 @@
+test the model on the whole dataset
+label:  0 Fh:  0.65 Fha:  0.00
+label:  1 Fh:  0.92 Fha:  0.04
+label:  2 Fh:  0.86 Fha:  0.00
+label:  3 Fh:  0.69 Fha:  0.00
+label:  4 Fh:  0.71 Fha:  0.02
+label:  5 Fh:  0.70 Fha:  0.00
+label:  6 Fh:  0.85 Fha:  0.00
+label:  7 Fh:  0.91 Fha:  0.05
+label:  8 Fh:  0.72 Fha:  0.00
+label:  9 Fh:  0.68 Fha:  0.00
+label:  A Fh:  0.73 Fha:  0.00
+label:  B Fh:  0.72 Fha:  0.00
+label:  C Fh:  0.92 Fha:  0.00
+label:  D Fh:  0.67 Fha:  0.00
+label:  E Fh:  0.97 Fha:  0.00
+label:  F Fh:  0.98 Fha:  0.04
+label:  G Fh:  0.80 Fha:  0.00
+label:  H Fh:  0.68 Fha:  0.05
+label:  I Fh:  0.95 Fha:  0.00
+label:  J Fh:  0.59 Fha:  0.04
